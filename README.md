@@ -6,10 +6,10 @@ DevFlow AI 是一个面向 GitHub PR / Issue 研发协作的全栈 AI Agent 项�
 
 原始项目为课程提供，本仓库记录我在其上的部署排障与工程化扩展：
 
-- **CI 分析上下文缓存**：Redis + 进程内 LRU 两级，缓存键带日志内容哈希；Redis 不可用自动降级，命中率通过 /metrics 暴露。实现见 ackend/app/services/ci_context_cache.py。
+- **CI 分析上下文缓存**：Redis + 进程内 LRU 两级，缓存键带日志内容哈希；Redis 不可用自动降级，命中率通过 /metrics 暴露。实现见 backend/app/services/ci_context_cache.py。
 - **Prometheus 指标**：GET /metrics 输出缓存命中/未命中、降级次数、CI 分析成败，不依赖 prometheus_client。
 - **测试**：新增 20 个用例（含真实 Redis 集成），全量 229 个通过。
-- **压测脚本**：ackend/scripts/bench_ci_cache.py，18.5 KB 负载下 Redis 0.48 ms、进程内 0.10 ms。
+- **压测脚本**：backend/scripts/bench_ci_cache.py，18.5 KB 负载下 Redis 0.48 ms、进程内 0.10 ms。
 
 ## 核心能力
 
