@@ -2,14 +2,22 @@
 
 DevFlow AI 是一个面向 GitHub PR / Issue 研发协作的全栈 AI Agent 项目。系统会连接仓库数据，分析 Issue、PR diff、CI 日志、项目知识库和本地工作区代码，并返回结构化建议与安全的操作草稿。
 
-## 关于本仓库
+## 工程化改造
 
-原始项目为课程提供，本仓库记录我在其上的部署排障与工程化扩展：
+- **CI 分析上下文缓存**：Redis + 进程内 LRU 两级，缓存键带日志内容哈希；Redis 不可用自动降级，命中率通过 `/metrics` 暴露。实现见 `backend/app/services/ci_context_cache.py`。
+- **Prometheus 指标**：`GET /metrics` 输出缓存命中/未命中、降级次数、CI 分析成败，不依赖 `prometheus_client`。
+- **测试**：229 个用例全部通过，其中 20 个覆盖缓存与指标（含真实 Redis 集成用例）。
+- **压测脚本**：`backend/scripts/bench_ci_cache.py`，18.5 KB 负载下 Redis 0.48 ms、进程内 0.10 ms。
 
-- **CI 分析上下文缓存**：Redis + 进程内 LRU 两级，缓存键带日志内容哈希；Redis 不可用自动降级，命中率通过 /metrics 暴露。实现见 backend/app/services/ci_context_cache.py。
-- **Prometheus 指标**：GET /metrics 输出缓存命中/未命中、降级次数、CI 分析成败，不依赖 prometheus_client。
-- **测试**：新增 20 个用例（含真实 Redis 集成），全量 229 个通过。
-- **压测脚本**：backend/scripts/bench_ci_cache.py，18.5 KB 负载下 Redis 0.48 ms、进程内 0.10 ms。
+## 界面截图
+
+CI Debug 分析：读取失败 job 与日志，输出失败归因、排查步骤和修复建议。
+
+![CI Debug 分析](docs/assets/ci-debug.png)
+
+Prometheus 指标：缓存命中/未命中、降级状态与 CI 分析计数。
+
+![Prometheus 指标](docs/assets/metrics.png)
 
 ## 核心能力
 

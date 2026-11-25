@@ -33,6 +33,10 @@ ci_context_cache = CiContextCache(
 )
 metrics.describe("devflow_ci_analysis_total", "CI 分析执行次数", "counter")
 
+for _result in ("success", "error"):
+    metrics.inc("devflow_ci_analysis_total", 0, result=_result)
+
+
 PROJECT_DOC_TYPES = {"knowledge_file", "memory_note", "project_doc"}
 PUBLIC_REASONING_PROMPT = """
 你是 DevFlow AI 的 CI 根因分析 Agent。请用中文流式输出一段“公开排查过程”，帮助用户理解你如何按计划定位失败 CI。

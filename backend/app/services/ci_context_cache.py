@@ -27,6 +27,12 @@ metrics.describe(CACHE_UP, "1 表示配置的缓存后端可用，0 表示已降
 metrics.describe(CACHE_REQUESTS, "CI 分析上下文缓存请求数", "counter")
 metrics.describe(CACHE_FALLBACK, "Redis 不可用而降级到内存缓存的次数", "counter")
 
+# 预置 0 值序列：没有流量时 Prometheus 也能看到这些 label 组合，rate() 不会缺数据。
+for _backend in ("redis", "memory"):
+    for _result in ("hit", "miss"):
+        metrics.inc(CACHE_REQUESTS, 0, result=_result, backend=_backend)
+
+
 
 class CacheUnavailable(RuntimeError):
     """Redis 不可用，调用方应降级。"""
